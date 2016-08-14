@@ -1,0 +1,17 @@
+{
+  "name": "PlayToKodi",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "start": "concurrently --kill-others 'tsc --watch --pretty' 'react-native run-ios'"
+  },
+  "dependencies": {
+    "react": "15.2.1",
+    "react-native": "^0.31.0"
+  },
+  "devDependencies": {
+    "concurrently": "^2.2.0",
+    "typescript": "^1.8.10",
+    "typings": "^1.3.2"
+  }
+}
