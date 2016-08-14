@@ -1,11 +1,14 @@
 import * as React from "react";
-import { StyleSheet, View} from "react-native";
+import { StyleSheet, ScrollView} from "react-native";
 import api from "../api";
-import MovieList from "../components/MovieList";
+import MoviesSlider from "../components/MoviesSlider";
 import {Movie} from "../api";
 
 interface MoviesState {
-  movies: Movie[]
+  trendingMovies: Movie[],
+  lastAddedMovies: Movie[],
+  trendingActionMovies: Movie[],
+  trendingComedyMovies: Movie[],
 }
 
 export default class Movies extends React.Component<{}, MoviesState> {
@@ -15,7 +18,10 @@ export default class Movies extends React.Component<{}, MoviesState> {
   constructor() {
     super();
     this.state = {
-      movies: []
+      trendingMovies: [],
+      lastAddedMovies: [],
+      trendingActionMovies: [],
+      trendingComedyMovies: []
     }
   }
   
@@ -24,8 +30,11 @@ export default class Movies extends React.Component<{}, MoviesState> {
   }
   
   async fetchMovies() {
-    const movies = await api.movies();
-    this.setState({movies});
+    const trendingMovies = await api.movies({sort: "trending", order: -1});
+    const lastAddedMovies = await api.movies({sort: "last added", order: -1});
+    const trendingActionMovies = await api.movies({sort: "trending", genre: "action", order: -1});
+    const trendingComedyMovies = await api.movies({sort: "trending", genre: "comedy", order: -1});
+    this.setState({trendingMovies, lastAddedMovies, trendingActionMovies, trendingComedyMovies});
   }
   
   async downloadMovie(movie: Movie) {
@@ -39,9 +48,12 @@ export default class Movies extends React.Component<{}, MoviesState> {
   
   render() {
     return (
-      <View style={styles.container}>
-        <MovieList movies={this.state.movies} onClick={movie => this.downloadMovie(movie)}/>
-      </View>
+      <ScrollView style={styles.container}>
+        <MoviesSlider movies={this.state.trendingMovies} onClick={movie => this.downloadMovie(movie)} title="Trending Movies"/>
+        <MoviesSlider movies={this.state.lastAddedMovies} onClick={movie => this.downloadMovie(movie)} title="Last Added"/>
+        <MoviesSlider movies={this.state.trendingActionMovies} onClick={movie => this.downloadMovie(movie)} title="Trending Action Movies"/>
+        <MoviesSlider movies={this.state.trendingComedyMovies} onClick={movie => this.downloadMovie(movie)} title="Trending Comedy Movies"/>
+      </ScrollView>
     );
   }
   

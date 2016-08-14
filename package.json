@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "start": "concurrently --kill-others 'tsc --watch --pretty' 'react-native run-ios'"
+    "start": "react-native run-ios && tsc --watch --pretty"
   },
   "dependencies": {
     "react": "15.2.1",

@@ -1,18 +1,20 @@
 import * as React from "react";
-import {ListView, StyleSheet, TouchableHighlight, Image} from "react-native";
+import {ListView, StyleSheet, TouchableHighlight, Image, View, Text} from "react-native";
 import {Movie} from "../api";
 import ViewStyle = __React.ViewStyle;
+import TextStyle = __React.TextStyle;
 
-interface MovieListProps {
+interface MoviesSliderProps {
   movies: Movie[],
+  title?: string,
   onClick?: (movie: Movie) => void
 }
 
-interface MovieListState {
+interface MoviesSliderState {
     ds: __React.ListViewDataSource
 }
 
-export default class MovieList extends React.Component<MovieListProps, MovieListState> {
+export default class MoviesSlider extends React.Component<MoviesSliderProps, MoviesSliderState> {
 
   constructor() {
     super();
@@ -26,19 +28,25 @@ export default class MovieList extends React.Component<MovieListProps, MovieList
     this.setState({ds: this.state.ds.cloneWithRows<Movie>(this.props.movies)});
   }
   
-  componentDidUpdate(prevProps: MovieListProps) {
+  componentDidUpdate(prevProps: MoviesSliderProps) {
     if (this.props.movies != prevProps.movies) {
       this.setState({ds: this.state.ds.cloneWithRows(this.props.movies)});
     }
   }
   
   render() {
+    const {title} = this.props;
+    const titleView = title ? <Text style={styles.title}>{title}</Text> : null;
     return (
-      <ListView contentContainerStyle={styles.list}
-                enableEmptySections={true}
-                dataSource={this.state.ds}
-                renderRow={this.renderMovie}
-      />
+      <View style={styles.container}>
+        {titleView}
+        <ListView contentContainerStyle={styles.list}
+                  enableEmptySections={true}
+                  dataSource={this.state.ds}
+                  renderRow={this.renderMovie}
+                  horizontal={true}
+        />
+      </View>
     )
   }
   
@@ -49,7 +57,7 @@ export default class MovieList extends React.Component<MovieListProps, MovieList
         <Image style={styles.thumb} source={imgSource} />
       </TouchableHighlight>
     );
-  }
+  };
   
   onPressMovie = (movie: Movie) => {
     const cb = this.props.onClick;
@@ -58,25 +66,29 @@ export default class MovieList extends React.Component<MovieListProps, MovieList
   
 }
 
+const imageWidth = 320/ 3;
+const imageHeight = (300/ 3) * 1.5;
+
 var styles = StyleSheet.create({
+  container: {
+
+  } as ViewStyle,
+  title: {
+    color: "#fff",
+    margin: 5,
+    fontWeight: "bold"
+  } as TextStyle,
   list: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    justifyContent: "space-around"
+    height: imageHeight
   } as ViewStyle,
   highlight: {
-    width: 320 / 3,
-    height: (300/ 3) * 1.5,
-    marginBottom: 10
+    width: imageWidth,
+    height: imageHeight,
+    marginLeft: 5
   },
   thumb: {
-    width: 300 / 3,
-    height: (300/ 3) * 1.5,
-  },
-  text: {
-    flex: 1,
-    marginTop: 5,
-    fontWeight: 'bold'
+    width: imageWidth,
+    height: imageHeight,
   }
 });
 
