@@ -14,6 +14,19 @@ class Api {
     return await response.json();
   }
 
+  async shows(query: ShowsQuery = {}): Promise<Show[]> {
+    const url = `${this.endpoint}/tv/shows/1?${qs.stringify(query)}`;
+    console.log("url", url);
+    const response = await fetch(url);
+    return await response.json();
+  }
+
+  async showDetails(imdbId: string): Promise<ShowDetails> {
+    const url = `${this.endpoint}/tv/show/${imdbId}`;
+    const response = await fetch(url);
+    return await response.json();
+  }
+
   async playMagnet(magnet: string) {
     const encodedMagnet = encodeURIComponent(magnet);
     const body = {
@@ -84,12 +97,98 @@ interface Torrent {
 
 export interface MoviesQuery {
   sort?: "last added" | "rating" | "title" | "trending" | "year",
-  genre?: MovieGenre,
+  genre?: Genres,
   order?: number,
   keywords?: string
 }
 
-type MovieGenre =
+type Genres =
   "action" | "adventure" | "animation" | "comedy" | "crime" |" disaster" | "documentary" | "drama" | "eastern" | "family" | "fan-film" | "fantasy" | "film-noir" | "history" | "holiday" | "horror" | "indie" | "music" | "mystery" | "none" | "road" | "romance" | "science-fiction" | "short" | "sports" | "sporting-event" | "suspense" | "thriller" | "tv-movie" | "war" | "western";
+
+export interface ShowsQuery {
+  sort?: "name" | "rating" | "trending" | "updated" | "year",
+  order?: number,
+  genre?: Genres,
+  keywords?: string
+}
+
+export interface Show {
+  _id: string,
+  imdb_id: string,
+  tvdb_id: string,
+  title: string,
+  year: string,
+  slug: string,
+  num_seasons: number,
+  images: {
+    banner: string,
+    fanart: string,
+    poster: string
+  },
+  rating: {
+    hated: number,
+    loved: number,
+    votes: number,
+    watching: number,
+    percentage: number
+  }
+}
+
+export interface ShowDetails {
+  _id: string,
+  imdb_id: string,
+  tvdb_id: string,
+  title: string,
+  year: string,
+  slug: string,
+  synopsis: string,
+  runtime: string,
+  country: string,
+  network: string,
+  air_time: string,
+  status: string,
+  num_seasons: number,
+  last_updated: number,
+  __v: number,
+  episodes: ShowEpisode[],
+  genres: string[],
+  images: {
+    banner: string,
+    fanart: string,
+    poster: string
+  },
+  rating: {
+    hated: number,
+    loved: number,
+    votes: number,
+    watching: number,
+    percentage: number
+  }
+}
+
+export interface ShowEpisode {
+  torrents: {
+    "480p"?: ShowTorrent,
+    "720p"?: ShowTorrent,
+    "1080p"?: ShowTorrent
+  },
+  watched: {
+    watched: boolean,
+  },
+  first_aired: number,
+  date_based: boolean,
+  overview: string,
+  title: string,
+  episode: number,
+  season: number,
+  tvdb_id: number
+}
+
+export interface ShowTorrent {
+  provider: string,
+  peer: number,
+  seeds: number,
+  url: string
+}
 
 export default new Api();

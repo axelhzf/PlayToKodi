@@ -8,7 +8,6 @@ import MovieScreen from "./MovieScreen";
 interface MoviesProps {
   navigator: any
 }
-;
 
 interface MoviesState {
   trendingMovies: Movie[],
