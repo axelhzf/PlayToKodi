@@ -1,6 +1,7 @@
 import * as React from "react";
 import { NavigatorIOS, StyleSheet, View} from 'react-native';
 import Movies from "./containers/Movies";
+import {colors} from "./styles"
 
 declare module "react-native" {
   interface NavigatorIOSProperties {
@@ -19,6 +20,7 @@ export default class App extends React.Component<{},{}> {
           titleTextColor="#fff"
           shadowHidden={true}
           barTintColor="#141414"
+          tintColor={colors.primary}
         />
       </View>
     );

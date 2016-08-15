@@ -15,34 +15,30 @@ class Api {
   }
 
   async playMagnet(magnet: string) {
-    console.log("downloading magnet", magnet);
-    return;
+    const encodedMagnet = encodeURIComponent(magnet);
+    const body = {
+      jsonrpc: "2.0",
+      method: "Player.Open",
+      id: 1,
+      params: {
+        item: {
+          file: `plugin://plugin.video.xbmctorrent/play/${encodedMagnet}`
+        }
+      }
+    };
 
-    /*
-     const encodedMagnet = encodeURIComponent(magnet);
-     const body = {
-     jsonrpc: "2.0",
-     method: "Player.Open",
-     id: 1,
-     params: {
-     item: {
-     file: `plugin://plugin.video.xbmctorrent/play/${encodedMagnet}`
-     }
-     }
-     };
+    const response = await fetch("http://192.168.1.39/jsonrpc",
+      {
+        method: "POST",
+        body: JSON.stringify(body),
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        }
+      });
 
-     const response = await fetch("http://192.168.1.39/jsonrpc",
-     {
-     method: "POST",
-     body: JSON.stringify(body),
-     headers: {
-     'Accept': 'application/json',
-     'Content-Type': 'application/json'
-     }
-     });
+    return await response.json();
 
-     return await response.json();
-     */
   }
 
 }
